@@ -932,25 +932,45 @@
         });
 
         // Contact form submission
-        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+       document.querySelector('.contact-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const btn = this.querySelector('button[type="submit"]');
+
+            const form = this;
+            const btn = form.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
-            
+
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             btn.disabled = true;
-            
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
-                this.reset();
-                
+
+            // Send data to Formspree
+            fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
+                    form.reset();
+                } else {
+                    btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error!';
+                }
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }, 2000);
-            }, 1500);
+            })
+            .catch(() => {
+                btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            });
         });
+
 
         // Window resize handler
         window.addEventListener('resize', () => {
