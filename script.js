@@ -911,7 +911,7 @@
                 const centerY = rect.height / 2;
                 const rotateX = (y - centerY) / 10;
                 const rotateY = (centerX - x) / 10;
-         N       
+                
                 gsap.to(card, {
                     rotateX: rotateX,
                     rotateY: rotateY,
