@@ -1150,3 +1150,76 @@
             0% { transform: translateY(0px); }
             100% { transform: translateY(-10px); }
         }
+
+        /* Motivation Quote Section */
+        .motivation-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .quote-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .motivation-quote {
+            font-size: 1.8rem;
+            font-style: italic;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0 0 2rem 0;
+            position: relative;
+            font-weight: 300;
+        }
+
+        .quote-author {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 2rem;
+            font-style: normal;
+        }
+
+        .motivation-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .motivation-subtitle p {
+            margin: 0;
+        }
+
+        /* Responsive design for motivation section */
+        @media (max-width: 768px) {
+            .motivation-quote {
+                font-size: 1.4rem;
+            }
+            
+            .quote-icon {
+                font-size: 2.5rem;
+            }
+            
+            .motivation-content {
+                padding: 3rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .motivation-quote {
+                font-size: 1.2rem;
+            }
+            
+            .quote-icon {
+                font-size: 2rem;
+            }
+        }
