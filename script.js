@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const loadingEl = document.getElementById('loading');
                 if (loadingEl) loadingEl.classList.add('hidden');
                 document.documentElement.classList.add('page-loaded');
-            }, 3000);
+            }, 2000);
 
             // Load saved theme
             const savedTheme = localStorage.getItem('theme');
@@ -1016,4 +1016,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         
+
 
