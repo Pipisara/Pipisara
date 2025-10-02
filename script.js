@@ -245,28 +245,7 @@
             console.log(`Total plexus instances created: ${plexusInstances.length}`); // Debug log
         }
         
-        function setupSmoothScrolling() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    if (href === '#') return;
-                    
-                    e.preventDefault();
-                    const target = document.querySelector(href);
-                    if (!target) return;
-                    
-                    gsap.to(window, {
-                        duration: 1,
-                        scrollTo: {
-                            y: target,
-                            offsetY: 80,
-                            autoKill: true
-                        },
-                        ease: "power3.inOut"
-                    });
-                });
-            });
-        }
+        
 
 
 
@@ -275,8 +254,7 @@
         // Add to your existing DOMContentLoaded event
 
         
-        document.addEventListener('DOMContentLoaded', function() {
-            setupSmoothScrolling();
+document.addEventListener('DOMContentLoaded', function() {
             window.scrollTo(0, 0);
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
@@ -286,9 +264,10 @@
                 history.scrollRestoration = 'manual';
             }
 
-            // Hide loading screen
+            // Show loading screen for a fixed 3 seconds
             setTimeout(() => {
-                document.getElementById('loading').classList.add('hidden');
+                const loadingEl = document.getElementById('loading');
+                if (loadingEl) loadingEl.classList.add('hidden');
                 document.documentElement.classList.add('page-loaded');
             }, 3000);
 
@@ -301,18 +280,24 @@
                 themeIcon.className = 'fas fa-sun';
             }
             
-            // Initialize Three.js particles
-            initParticles();
-            
-            // Initialize plexus backgrounds after a short delay
-            setTimeout(() => {
-                initPlexusBackgrounds();
-            }, 3800);
-            
-            // Initialize GSAP animations
-            setTimeout(() => {
-                initAnimations();
-            }, 3500);
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const idle = (cb) => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(cb, { timeout: 1200 });
+                } else {
+                    setTimeout(cb, 300);
+                }
+            };
+
+            // Initialize light features immediately; heavy ones during idle
+            idle(() => {
+                if (!prefersReducedMotion) {
+                    try { initParticles(); } catch (e) {}
+                }
+                try { initPlexusBackgrounds(); } catch (e) {}
+                try { initAnimations(); } catch (e) {}
+            });
             
             // Event listeners
             document.getElementById('start-game').addEventListener('click', startGame);
@@ -322,19 +307,18 @@
         });
 
         
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            setTimeout(() => {
-                initPlexusBackgrounds();
-            }, 100);
-        });
+        
 
-        // Initialize GSAP and ScrollTrigger
-        gsap.registerPlugin(ScrollTrigger);
+        // Initialize GSAP plugins
+        if (typeof ScrollToPlugin !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+        } else {
+            gsap.registerPlugin(ScrollTrigger);
+        }
 
         // Variables
         let scene, camera, renderer, particles;
-        const cursorTrails = [];
+        
         let gameActive = false;
         let score = 0;
         let timeLeft = 30;
@@ -358,36 +342,7 @@
           //  createCursorTrail(mouseX, mouseY);
         });
 
-        function createCursorTrail(x, y) {
-            const trail = document.createElement('div');
-            trail.className = 'cursor-trail';
-            trail.style.left = x - 3 + 'px';
-            trail.style.top = y - 3 + 'px';
-            document.body.appendChild(trail);
-
-            gsap.to(trail, {
-                scale: 0,
-                opacity: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                onComplete: () => trail.remove()
-            });
-
-
-             const cursor = document.querySelector('.custom-cursor');
-
-            document.addEventListener('mousedown', () => {
-            cursor.classList.add('click');
-            });
-
-            document.addEventListener('mouseup', () => {
-            cursor.classList.remove('click');
-            });
-
-            document.addEventListener('mouseleave', () => {
-            cursor.classList.remove('click');
-            });
-        }
+        
 
        
 
@@ -411,6 +366,7 @@
 
         // Three.js Particles
         function initParticles() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             const container = document.getElementById('particles-container');
             
             scene = new THREE.Scene();
@@ -421,7 +377,9 @@
             container.appendChild(renderer.domElement);
 
             // Create particles
-            const particleCount = 150;
+            // Reduce particle count on small screens
+            const isMobile = window.innerWidth <= 768;
+            const particleCount = isMobile ? 80 : 150;
             const positions = new Float32Array(particleCount * 3);
             const colors = new Float32Array(particleCount * 3);
 
@@ -466,8 +424,10 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            particles.rotation.x += 0.001;
-            particles.rotation.y += 0.002;
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                particles.rotation.x += 0.001;
+                particles.rotation.y += 0.002;
+            }
 
             // Mouse interaction
             const mouseXNorm = (mouseX / window.innerWidth) * 2 - 1;
@@ -864,20 +824,22 @@
             });
         }
 
-        // Smooth scrolling for navigation links
+        // Smooth scrolling for navigation links (with fallback if ScrollToPlugin is missing)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || href === '#') return;
+                const target = document.querySelector(href);
+                if (!target) return;
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
+                if (typeof ScrollToPlugin !== 'undefined') {
                     gsap.to(window, {
                         duration: 1,
-                        scrollTo: {
-                            y: target,
-                            offsetY: 80
-                        },
+                        scrollTo: { y: target, offsetY: 80 },
                         ease: "power3.inOut"
                     });
+                } else {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
@@ -972,15 +934,7 @@
         });
 
 
-        // Window resize handler
-        window.addEventListener('resize', () => {
-            if (renderer) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-            ScrollTrigger.refresh();
-        });
+        
 
         // Initialize everything when DOM is loaded
         
@@ -1061,11 +1015,5 @@
             });
         });
 
-        document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
-        link.addEventListener('click', e => {
-            e.preventDefault();
-            const target = document.querySelector(link.getAttribute('href'));
-            target?.scrollIntoView({ behavior: 'smooth' });
-        });
-        });
+        
 
