@@ -4,14 +4,9 @@
             box-sizing: border-box;
             cursor: none;
         }
-         /* html {
-            scroll-behavior: auto !important;
-        }   */
-        /* .page-loaded {
-            scroll-behavior: smooth !important;
-        } */
+        
         html {
-            scroll-behavior: smooth;
+            scroll-behavior: auto; /* Use GSAP ScrollTo for smooth scrolling to prevent jitter */
         }
         
         :root {
@@ -52,16 +47,7 @@
             transition: transform 0.1s ease;
         }
 
-        .cursor-trail {
-            position: fixed;
-            width: 6px;
-            height: 6px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9998;
-            opacity: 0.7;
-        }
+        
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -190,9 +176,7 @@
             align-items: center;
         }
 
-        .custom-cursor {
-            pointer-events: none;
-            }
+        
 
 
         .hero-text h1 {
@@ -530,7 +514,7 @@
         .project-card {
             background: var(--bg-card);
             border-radius: 1.5rem;
-            overflow: hidden; /* might be clipping content — see note below */
+            overflow: hidden;
             box-shadow: var(--shadow);
             transition: all 0.4s ease;
             transform: translateY(50px) rotateX(5deg);
@@ -1024,6 +1008,7 @@
         .loading.hidden {
             opacity: 0;
             pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
         .loader {
