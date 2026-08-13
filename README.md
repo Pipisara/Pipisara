@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0f1a,50:1a0033,100:0d001a&height=200&section=header&text=Pipisara%20Chandrabhanu&fontSize=42&fontColor=39ff14&animation=fadeIn&fontAlignY=38&desc=Full%20Stack%20Developer&descAlignY=55&descColor=ff00c8"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0f1a,50:1a0033,100:0d001a&height=200&section=header&text=Pipisara%20Chandrabhanu&fontSize=42&fontColor=39ff14&animation=fadeIn&fontAlignY=38&desc=&descAlignY=55&descColor=ff00c8"/>
 
 <a href="https://github.com/Pipisara">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=800&color=39FF14&center=true&vCenter=true&width=600&lines=%3E+whoami+..._;Building+with+code+%26+chaos;Welcome+to+my+terminal" alt="Typing SVG" />
